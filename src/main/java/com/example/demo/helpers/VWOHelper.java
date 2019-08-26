@@ -7,6 +7,8 @@ import com.google.gson.JsonParser;
 import com.vwo.VWO;
 import com.vwo.logger.VWOLogger;
 import com.vwo.userprofile.UserProfileService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +17,8 @@ import java.util.Map;
 import java.util.Random;
 
 public class VWOHelper {
+    private static final Logger LOGGER = LoggerFactory.getLogger(VWOHelper.class);
+
     /**
      * Before evaluating the variation of a user for a campaign, lookup method is called.
      * Any custom logic to provide the saved variation can be added here.
@@ -66,31 +70,28 @@ public class VWOHelper {
     public static VWOLogger getCustomLogger() {
         return new VWOLogger() {
             @Override
-            public void trace(String var1, Object... var2) {
-                System.out.println("Custom Logger [Trace]: " + var1 + Arrays.toString(var2));
+            public void trace(String message, Object... params) {
+                LOGGER.trace(message, params);
             }
 
             @Override
-            public void debug(String var1, Object... var2) {
-                System.out.println("Custom Logger [Debug]: " + var1 + Arrays.toString(var2));
-
+            public void debug(String message, Object... params) {
+                LOGGER.debug(message, params);
             }
 
             @Override
-            public void info(String var1, Object... var2) {
-                System.out.println("Custom Logger [Info]: " + var1 + Arrays.toString(var2));
-
+            public void info(String message, Object... params) {
+                LOGGER.info(message, params);
             }
 
             @Override
-            public void warn(String var1, Object... var2) {
-                System.out.println("Custom Logger [Warn]: " + var1 + Arrays.toString(var2));
-
+            public void warn(String message, Object... params) {
+                LOGGER.warn(message, params);
             }
 
             @Override
-            public void error(String var1, Object... var2) {
-                System.out.println("Custom Logger [Error]: " + var1 + Arrays.toString(var2));
+            public void error(String message, Object... params) {
+                LOGGER.error(message, params);
             }
         };
     }
