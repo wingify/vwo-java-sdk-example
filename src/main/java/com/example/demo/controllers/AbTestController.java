@@ -24,11 +24,8 @@ public class AbTestController {
             if (settingsFile == null || !settingsFile.equals(this.currentSettingsFile)) {
                 this.currentSettingsFile = settingsFile;
                 this.vwoInstance = VWO.createInstance(settingsFile).withUserProfileService(VWOHelper.getUserProfileService()).withCustomLogger(VWOHelper.getCustomLogger()).build();
-
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) {}
     }
 
     @GetMapping(value = "/")

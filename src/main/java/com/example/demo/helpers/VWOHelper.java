@@ -32,31 +32,17 @@ public class VWOHelper {
         return new UserProfileService() {
             @Override
             public Map<String, String> lookup(String userId, String campaignName) throws Exception {
-                // Can define any custom logic to get saved variation of a user for a campaign.
-                // Return null if variation not found.
-
                 for (Map<String, String> savedCampaignBucket: savedCampaignBucketArray) {
                     if (savedCampaignBucket.get("userId") == userId && savedCampaignBucket.get("campaign") == campaignName) {
-                        Map<String, String> campaignBucketMap = new HashMap<>();
-                        campaignBucketMap.put(UserProfileService.userId, userId);
-                        campaignBucketMap.put(UserProfileService.campaignKey, campaignName);
-                        campaignBucketMap.put(UserProfileService.variationKey, savedCampaignBucket.get("variationName"));
-
-                        return campaignBucketMap;
+                        return savedCampaignBucket;
                     }
                 }
-
                 return null;
             }
 
             @Override
             public void save(Map<String, String> map) throws Exception {
-                Map<String, String> campaignBucketMap = new HashMap<>();
-                campaignBucketMap.put(UserProfileService.userId, map.get("userId"));
-                campaignBucketMap.put(UserProfileService.campaignKey, map.get("campaign"));
-                campaignBucketMap.put(UserProfileService.variationKey, map.get("variationName"));
-
-                savedCampaignBucketArray.add(campaignBucketMap);
+                savedCampaignBucketArray.add(map);
             }
         };
     }
@@ -102,16 +88,32 @@ public class VWOHelper {
 
     public static String getRandomUser() {
         String[] users = {
-            "Alice",
-            "Bob",
-            "Charlie",
-            "Don",
-            "Eli",
-            "Fabio",
-            "Gary",
-            "Helen",
-            "Ian",
-            "Jil"
+                "Ashley",
+                "Bill",
+                "Chris",
+                "Dominic",
+                "Emma",
+                "Faizan",
+                "Gimmy",
+                "Harry",
+                "Ian",
+                "John",
+                "King",
+                "Lisa",
+                "Mona",
+                "Nina",
+                "Olivia",
+                "Pete",
+                "Queen",
+                "Robert",
+                "Sarah",
+                "Tierra",
+                "Una",
+                "Varun",
+                "Will",
+                "Xin",
+                "You",
+                "Zeba"
         };
 
         return users[new Random().nextInt(users.length)];
