@@ -8,6 +8,7 @@ import com.vwo.VWO;
 import com.vwo.logger.VWOLogger;
 import com.vwo.userprofile.UserProfileService;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,37 +23,36 @@ public class VWOHelper {
      * @return {UserProfileService} User profile service instance
      */
     public static UserProfileService getUserProfileService() {
+        ArrayList<Map<String, String>> savedCampaignBucketArray = new ArrayList<>();
+
         return new UserProfileService() {
             @Override
             public Map<String, String> lookup(String userId, String campaignName) throws Exception {
                 // Can define any custom logic to get saved variation of a user for a campaign.
                 // Return null if variation not found.
 
-                campaignName = campaignName == null ? "FIRST" : campaignName;
-                userId = userId == null ? "Steven" : userId;
+                for (Map<String, String> savedCampaignBucket: savedCampaignBucketArray) {
+                    if (savedCampaignBucket.get("userId") == userId && savedCampaignBucket.get("campaign") == campaignName) {
+                        Map<String, String> campaignBucketMap = new HashMap<>();
+                        campaignBucketMap.put(UserProfileService.userId, userId);
+                        campaignBucketMap.put(UserProfileService.campaignKey, campaignName);
+                        campaignBucketMap.put(UserProfileService.variationKey, savedCampaignBucket.get("variationName"));
 
-                String variation;
-                switch (userId) {
-                    case "Steven":
-                        variation = "Variation-1";
-                        break;
-                    default:
-                        variation = null;
+                        return campaignBucketMap;
+                    }
                 }
 
-
-                Map<String, String> campaignBucketMap = new HashMap<>();
-                campaignBucketMap.put(UserProfileService.userId, userId);
-                campaignBucketMap.put(UserProfileService.campaignKey, campaignName);
-                campaignBucketMap.put(UserProfileService.variationKey, variation);
-
-                return campaignBucketMap;
+                return null;
             }
 
             @Override
             public void save(Map<String, String> map) throws Exception {
-                // Map contains 'userId', 'campaignName' and 'variation'.
-                // Can save it using custom logic.
+                Map<String, String> campaignBucketMap = new HashMap<>();
+                campaignBucketMap.put(UserProfileService.userId, map.get("userId"));
+                campaignBucketMap.put(UserProfileService.campaignKey, map.get("campaign"));
+                campaignBucketMap.put(UserProfileService.variationKey, map.get("variationName"));
+
+                savedCampaignBucketArray.add(campaignBucketMap);
             }
         };
     }
