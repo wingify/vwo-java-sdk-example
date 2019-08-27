@@ -11,8 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -33,7 +31,7 @@ public class VWOHelper {
             @Override
             public Map<String, String> lookup(String userId, String campaignName) throws Exception {
                 for (Map<String, String> savedCampaignBucket: savedCampaignBucketArray) {
-                    if (savedCampaignBucket.get("userId") == userId && savedCampaignBucket.get("campaign") == campaignName) {
+                    if (savedCampaignBucket.get("userId").equals(userId) && savedCampaignBucket.get("campaignTestKey").equals(campaignName)) {
                         return savedCampaignBucket;
                     }
                 }

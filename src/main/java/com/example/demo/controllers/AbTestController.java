@@ -33,19 +33,22 @@ public class AbTestController {
         @RequestParam(value = "userId", required = false) String userId,
         Model model
     ) {
-        userId = userId == null ? VWOHelper.getRandomUser() : userId;
+        String variation = "";
+        try {
+            userId = userId == null ? VWOHelper.getRandomUser() : userId;
 
-        String variation = this.vwoInstance.activate(Config.campaignTestKey, userId);
-        this.vwoInstance.track(Config.campaignTestKey, userId, Config.goalIdentifier);
+            variation = this.vwoInstance.activate(Config.campaignTestKey, userId);
+            this.vwoInstance.track(Config.campaignTestKey, userId, Config.goalIdentifier);
+        } finally {
+            model.addAttribute("title", "VWO | Java-sdk example | " + variation);
+            model.addAttribute("userId", userId);
+            model.addAttribute("isPartOfCampaign", variation != null && !variation.isEmpty());
+            model.addAttribute("variation", variation);
+            model.addAttribute("campaignTestKey", Config.campaignTestKey);
+            model.addAttribute("goalIdentifier", Config.goalIdentifier);
+            model.addAttribute("settingsFile", VWOHelper.prettyJsonSting(this.currentSettingsFile));
 
-        model.addAttribute("title", "VWO | Java-sdk example | " + variation);
-        model.addAttribute("userId", userId);
-        model.addAttribute("isPartOfCampaign", variation != null);
-        model.addAttribute("variation", variation);
-        model.addAttribute("campaignTestKey", Config.campaignTestKey);
-        model.addAttribute("goalIdentifier", Config.goalIdentifier);
-        model.addAttribute("settingsFile", VWOHelper.prettyJsonSting(this.currentSettingsFile));
-
-        return "index";
+            return "index";
+        }
     }
 }
