@@ -53,6 +53,9 @@ public class VWOHelper {
      */
     public static VWOLogger getCustomLogger() {
         return new VWOLogger() {
+
+            public String level = VWO.Enums.LOGGER_LEVEL.TRACE.value();
+
             @Override
             public void trace(String message, Object... params) {
                 LOGGER.trace(message, params);
@@ -81,7 +84,7 @@ public class VWOHelper {
     }
 
     public static String getSettingsFile(String accountId, String sdkKey) {
-        return VWO.getSetting(accountId, sdkKey);
+        return VWO.getSettingsFile(accountId, sdkKey);
     }
 
     public static String getRandomUser() {
