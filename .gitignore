@@ -2,6 +2,7 @@
 .gradle
 .settings
 *.swp
+mvnw.cmd
 
 # intellij config files
 *.iml
@@ -25,6 +26,7 @@ classes
 .vagrant
 .DS_Store
 .venv
+
 
 target/*
 !target/*dependencies.jar
