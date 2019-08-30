@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 public class AbTestController {
     String currentSettingsFile;
     VWO vwoInstance;
-    Number pollTime = 1000;
 
     private AbTestController() {
         this.fetchSettingsAndCreateInstance();

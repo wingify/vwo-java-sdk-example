@@ -52,7 +52,7 @@ public class VWOHelper {
      * @return {VWOLogger} VWO logger instance
      */
     public static VWOLogger getCustomLogger() {
-        return new VWOLogger(VWO.Enums.LOGGER_LEVEL.INFO.value()) {
+        return new VWOLogger(VWO.Enums.LOGGER_LEVEL.DEBUG.value()) {
 
             @Override
             public void trace(String message, Object... params) {
