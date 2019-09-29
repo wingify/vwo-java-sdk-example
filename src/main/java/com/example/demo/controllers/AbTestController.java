@@ -11,9 +11,19 @@ import org.springframework.web.bind.annotation.*;
 public class AbTestController {
     String currentSettingsFile;
     VWO vwoInstance;
+    int pollingTime = 60000; // 60 sec
 
     private AbTestController() {
-        this.fetchSettingsAndCreateInstance();
+        (new Thread(() -> {
+            while (true) {
+                try {
+                    fetchSettingsAndCreateInstance();
+                    Thread.sleep(pollingTime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        })).start();
     }
 
     private void fetchSettingsAndCreateInstance() {
