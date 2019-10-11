@@ -120,17 +120,8 @@
                 </div>
             </div>
             <div class="half-containers center block">
-                <div class="center margin--top" th:if="${booleanVariableValue}">
-                    <button class="v1">BOOLEAN: <span th:text="${booleanVariableValue}"></span></button>
-                </div>
-                <div class="center margin--top" th:if="${integerVariableValue}">
-                    <button class="v1">INTEGER: <span th:text="${integerVariableValue}"></span></button>
-                </div>
-                <div class="center margin--top" th:if="${doubleVariableValue}">
-                    <button class="v1">DOUBLE: <span th:text="${doubleVariableValue}"></span></button>
-                </div>
-                <div class="center margin--top" th:if="${stringVariableValue}">
-                    <button class="v1">STRING: <span th:text="${stringVariableValue}"></span></button>
+                <div class="center margin--top" th:if="${featureVariableValue}">
+                    <button class="v1" th:text="${featureVariableValue}"></button>
                 </div>
                 <div class="center margin--top">
                     <button class="refresh" onclick="window.location.reload()">Refresh</button>

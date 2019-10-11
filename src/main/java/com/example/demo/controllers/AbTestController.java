@@ -18,7 +18,7 @@ public class AbTestController {
     (new Thread(() -> {
       while (true) {
         try {
-          fetchSettingsAndCreateInstance();
+          fetchSettingsAndLaunch();
           Thread.sleep(pollingTime);
         } catch (InterruptedException e) {
           e.printStackTrace();
@@ -27,13 +27,13 @@ public class AbTestController {
     })).start();
   }
 
-  private void fetchSettingsAndCreateInstance() {
+  private void fetchSettingsAndLaunch() {
     try {
       String settingsFile = VWOHelper.getSettingsFile(Config.accountId, Config.sdkKey);
 
       if (settingsFile == null || !settingsFile.equals(this.currentSettingsFile)) {
         this.currentSettingsFile = settingsFile;
-        this.vwoInstance = VWO.createInstance(settingsFile).withUserProfileService(VWOHelper.getUserProfileService()).withCustomLogger(VWOHelper.getCustomLogger()).build();
+        this.vwoInstance = VWO.launch(settingsFile).withUserStorage(VWOHelper.getUserStorage()).withCustomLogger(VWOHelper.getCustomLogger()).build();
       }
     } catch (Exception e) {
     }
@@ -53,14 +53,14 @@ public class AbTestController {
     try {
       userId = userId == null ? VWOHelper.getRandomUser() : userId;
 
-      variation = this.vwoInstance.activate(Config.campaignTestKey, userId);
-      this.vwoInstance.track(Config.campaignTestKey, userId, Config.goalIdentifier);
+      variation = this.vwoInstance.activate(Config.campaignKey, userId);
+      this.vwoInstance.track(Config.campaignKey, userId, Config.goalIdentifier);
     } finally {
       model.addAttribute("title", "VWO | Java-sdk example | " + variation);
       model.addAttribute("userId", userId);
       model.addAttribute("isPartOfCampaign", variation != null && !variation.isEmpty());
       model.addAttribute("variation", variation);
-      model.addAttribute("campaignTestKey", Config.campaignTestKey);
+      model.addAttribute("campaignKey", Config.campaignKey);
       model.addAttribute("goalIdentifier", Config.goalIdentifier);
       model.addAttribute("settingsFile", VWOHelper.prettyJsonSting(this.currentSettingsFile));
 
@@ -95,19 +95,13 @@ public class AbTestController {
     boolean isFeatureEnabled = this.vwoInstance.isFeatureEnabled(Config.featureTestCampaignKey, userId);
     this.vwoInstance.track(Config.featureTestCampaignKey, userId, Config.featureTestGoalIdentifier, Config.featureTestRevenue);
 
-    String stringVariableValue = this.vwoInstance.getFeatureVariableString(Config.featureTestCampaignKey, Config.stringVariableKey, userId);
-    Integer integerVariableValue = this.vwoInstance.getFeatureVariableInteger(Config.featureTestCampaignKey, Config.integerVariableKey, userId);
-    Boolean booleanVariableValue = this.vwoInstance.getFeatureVariableBoolean(Config.featureTestCampaignKey, Config.booleanVariableKey, userId);
-    Double doubleVariableValue = this.vwoInstance.getFeatureVariableDouble(Config.featureTestCampaignKey, Config.doubleVariableKey, userId);
+    Object featureVariableValue = this.vwoInstance.getFeatureVariableValue(Config.featureTestCampaignKey, Config.variableKey, userId);
 
     model.addAttribute("userId", userId);
     model.addAttribute("isFeatureEnabled", isFeatureEnabled);
     model.addAttribute("featureTestCampaignKey", Config.featureTestCampaignKey);
     model.addAttribute("featureTestGoalIdentifier", Config.featureTestGoalIdentifier);
-    model.addAttribute("stringVariableValue", stringVariableValue);
-    model.addAttribute("integerVariableValue", integerVariableValue);
-    model.addAttribute("booleanVariableValue", booleanVariableValue);
-    model.addAttribute("doubleVariableValue", doubleVariableValue);
+    model.addAttribute("featureVariableValue", featureVariableValue);
     model.addAttribute("settingsFile", VWOHelper.prettyJsonSting(this.currentSettingsFile));
 
     return "feature-test";

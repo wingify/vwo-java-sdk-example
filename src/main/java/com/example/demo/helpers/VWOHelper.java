@@ -6,7 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.vwo.VWO;
 import com.vwo.logger.VWOLogger;
-import com.vwo.userprofile.UserProfileService;
+import com.vwo.services.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,25 +22,25 @@ public class VWOHelper {
      * Any custom logic to provide the saved variation can be added here.
      * Also, when the variation is evaluated, 'save' method is called and which can be used to save the variation details.
      *
-     * @return {UserProfileService} User profile service instance
+     * @return {Storage.User} User storage instance
      */
-    public static UserProfileService getUserProfileService() {
-        ArrayList<Map<String, String>> savedCampaignBucketArray = new ArrayList<>();
+    public static Storage.User getUserStorage() {
+        ArrayList<Map<String, String>> campaignStorageArray = new ArrayList<>();
 
-        return new UserProfileService() {
+        return new Storage.User() {
             @Override
-            public Map<String, String> lookup(String userId, String campaignName) throws Exception {
-                for (Map<String, String> savedCampaignBucket: savedCampaignBucketArray) {
-                    if (savedCampaignBucket.get("userId").equals(userId) && savedCampaignBucket.get("campaignTestKey").equals(campaignName)) {
-                        return savedCampaignBucket;
+            public Map<String, String> get(String userId, String campaignKey) {
+                for (Map<String, String> savedCampaign: campaignStorageArray) {
+                    if (savedCampaign.get("userId").equals(userId) && savedCampaign.get("campaignKey").equals(campaignKey)) {
+                        return savedCampaign;
                     }
                 }
                 return null;
             }
 
             @Override
-            public void save(Map<String, String> map) throws Exception {
-                savedCampaignBucketArray.add(map);
+            public void set(Map<String, String> map) {
+                campaignStorageArray.add(map);
             }
         };
     }

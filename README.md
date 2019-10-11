@@ -33,7 +33,7 @@ mvn install
 public class Config {
   public static String accountId = "REPLACE_THIS_WITH_CORRECT_VALUE";
   public static String sdkKey = "REPLACE_THIS_WITH_CORRECT_VALUE";
-  public static String campaignTestKey = "REPLACE_THIS_WITH_CORRECT_VALUE";
+  public static String campaignKey = "REPLACE_THIS_WITH_CORRECT_VALUE";
   public static String goalIdentifier  = "REPLACE_THIS_WITH_CORRECT_VALUE";
 }
 ```
@@ -60,10 +60,10 @@ The mandatory parameter for instantiating the SDK is settingsFile.
 ```java
 import com.vwo.VWO;
 
-VWO vwoInstance = VWO.createInstance(settingsFile).build();
+VWO vwoInstance = VWO.launch(settingsFile).build();
 ```
 
-The VWO client class needs to be instantiated as an instance that exposes various API methods like activate, getVariation and track.
+The VWO client class needs to be instantiated as an instance that exposes various API methods like activate, getVariationName and track.
 
 **ASYNC EVENT DISPATCHER**
 
@@ -86,17 +86,17 @@ public class Example {
 
         EventDispatcher eventDispatcher = EventDispatcher.builder().build();
 
-        VWO vwo_instance = VWO.createInstance(settingsFile).withEventHandler(eventDispatcher).build();
+        VWO vwo_instance = VWO.launch(settingsFile).withEventHandler(eventDispatcher).build();
     }
 }
 ```
 
-**USER PROFILE SERVICE**
+**USER STORAGE**
 
 ```java
 String settingsFile = VWO.getSettingsFile(accountId, sdkKey);
 
-UserProfileService userProfileService = new UserProfileService() {
+UserStorage userStorage = new UserStorage() {
     @Override
     public Map<String, Object> lookup(String s, String s1) throws Exception {
     // hardcode values in map
@@ -107,13 +107,13 @@ UserProfileService userProfileService = new UserProfileService() {
 
         Map<String,Object> campaignKeyMap = new HashMap<>();
         Map<String, String> variationKeyMap = new HashMap<>();
-        variationKeyMap.put(UserProfileService.variationKey, variationId);
+        variationKeyMap.put(UserStorage.variationKey, variationId);
         campaignKeyMap.put(campaignId,variationKeyMap);
 
         //set
         Map<String, Object> campaignStaticBucketMap = new HashMap<>();
-        campaignStaticBucketMap.put(UserProfileService.userId, "Priya");
-        campaignStaticBucketMap.put(UserProfileService.campaignKey, campaignKeyMap);
+        campaignStaticBucketMap.put(UserStorage.userId, "Priya");
+        campaignStaticBucketMap.put(UserStorage.campaignKey, campaignKeyMap);
 
         return campaignStaticBucketMap;
     }
@@ -125,7 +125,7 @@ UserProfileService userProfileService = new UserProfileService() {
     }
 };
 
-VWO vwo = VWO.createInstance(settings).withUserProfileService(userProfileService).build();
+VWO vwo = VWO.launch(settings).withUserStorage(userStorage).build();
 ```
 
 **LOGGER**
