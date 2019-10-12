@@ -15,16 +15,16 @@ public class AbTestController {
   int pollingTime = 60000; // 60 sec
 
   private AbTestController() {
-    (new Thread(() -> {
-      while (true) {
-        try {
-          fetchSettingsAndLaunch();
-          Thread.sleep(pollingTime);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-      }
-    })).start();
+      (new Thread(() -> {
+          while (true) {
+              try {
+                fetchSettingsAndLaunch();
+                  Thread.sleep(pollingTime);
+              } catch (InterruptedException e) {
+                  e.printStackTrace();
+              }
+          }
+      })).start();
   }
 
   private void fetchSettingsAndLaunch() {
