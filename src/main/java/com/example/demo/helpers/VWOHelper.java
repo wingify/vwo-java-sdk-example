@@ -6,7 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.vwo.VWO;
 import com.vwo.logger.VWOLogger;
-import com.vwo.userprofile.UserProfileService;
+import com.vwo.services.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,31 +16,30 @@ import java.util.Random;
 
 public class VWOHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(VWOHelper.class);
+    private static ArrayList<Map<String, String>> campaignStorageArray = new ArrayList<>();
 
     /**
-     * Before evaluating the variation of a user for a campaign, lookup method is called.
+     * Before evaluating the variation of a user for a campaign, get method of user storage is called.
      * Any custom logic to provide the saved variation can be added here.
-     * Also, when the variation is evaluated, 'save' method is called and which can be used to save the variation details.
+     * Also, when the variation is evaluated, 'set' method is called and which can be used to save the variation details.
      *
-     * @return {UserProfileService} User profile service instance
+     * @return {Storage.User} User storage instance
      */
-    public static UserProfileService getUserProfileService() {
-        ArrayList<Map<String, String>> savedCampaignBucketArray = new ArrayList<>();
-
-        return new UserProfileService() {
+    public static Storage.User getUserStorage() {
+        return new Storage.User() {
             @Override
-            public Map<String, String> lookup(String userId, String campaignName) throws Exception {
-                for (Map<String, String> savedCampaignBucket: savedCampaignBucketArray) {
-                    if (savedCampaignBucket.get("userId").equals(userId) && savedCampaignBucket.get("campaignTestKey").equals(campaignName)) {
-                        return savedCampaignBucket;
+            public Map<String, String> get(String userId, String campaignKey) {
+                for (Map<String, String> savedCampaign: campaignStorageArray) {
+                    if (savedCampaign.get("userId").equals(userId) && savedCampaign.get("campaignKey").equals(campaignKey)) {
+                        return savedCampaign;
                     }
                 }
                 return null;
             }
 
             @Override
-            public void save(Map<String, String> map) throws Exception {
-                savedCampaignBucketArray.add(map);
+            public void set(Map<String, String> map) {
+                campaignStorageArray.add(map);
             }
         };
     }
