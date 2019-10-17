@@ -16,17 +16,16 @@ import java.util.Random;
 
 public class VWOHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(VWOHelper.class);
+    private static ArrayList<Map<String, String>> campaignStorageArray = new ArrayList<>();
 
     /**
-     * Before evaluating the variation of a user for a campaign, lookup method is called.
+     * Before evaluating the variation of a user for a campaign, get method of user storage is called.
      * Any custom logic to provide the saved variation can be added here.
-     * Also, when the variation is evaluated, 'save' method is called and which can be used to save the variation details.
+     * Also, when the variation is evaluated, 'set' method is called and which can be used to save the variation details.
      *
      * @return {Storage.User} User storage instance
      */
     public static Storage.User getUserStorage() {
-        ArrayList<Map<String, String>> campaignStorageArray = new ArrayList<>();
-
         return new Storage.User() {
             @Override
             public Map<String, String> get(String userId, String campaignKey) {
