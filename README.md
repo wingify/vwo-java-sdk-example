@@ -35,6 +35,11 @@ public class Config {
   public static String sdkKey = "REPLACE_THIS_WITH_CORRECT_VALUE";
   public static String campaignKey = "REPLACE_THIS_WITH_CORRECT_VALUE";
   public static String goalIdentifier  = "REPLACE_THIS_WITH_CORRECT_VALUE";
+  public static String featureRolloutCampaignKey = "REPLACE_THIS_WITH_CORRECT_VALUE";
+  public static String featureTestCampaignKey = "REPLACE_THIS_WITH_CORRECT_VALUE";
+  public static String featureTestGoalIdentifier = "REPLACE_THIS_WITH_CORRECT_VALUE";
+  public static Object featureTestRevenue = "REPLACE_THIS_WITH_CORRECT_VALUE";
+  public static String variableKey = "REPLACE_THIS_WITH_CORRECT_VALUE";
 }
 ```
 
@@ -63,69 +68,31 @@ import com.vwo.VWO;
 VWO vwoInstance = VWO.launch(settingsFile).build();
 ```
 
-The VWO client class needs to be instantiated as an instance that exposes various API methods like activate, getVariationName and track.
+The VWO client class needs to be instantiated as an instance that exposes various API methods like activate, getVariation and track.
 
-**ASYNC EVENT DISPATCHER**
-
-```java
-import com.vwo.event.EventDispatcher;
-import com.vwo.config.FileSettingUtils;
-
-
-public class Example {
-
-    private final VWO vwo;
-
-    public Example(VWO vwo) {
-        this.vwo = vwo;
-    }
-
-    public static void main(String[] args) {
-
-        String settingsFile = VWO.getSettingsFile(accountId, sdkKey);
-
-        EventDispatcher eventDispatcher = EventDispatcher.builder().build();
-
-        VWO vwo_instance = VWO.launch(settingsFile).withEventHandler(eventDispatcher).build();
-    }
-}
-```
-
-**USER STORAGE**
+**USER STORAGE SERVICE**
 
 ```java
 String settingsFile = VWO.getSettingsFile(accountId, sdkKey);
 
-UserStorage userStorage = new UserStorage() {
-    @Override
-    public Map<String, Object> lookup(String s, String s1) throws Exception {
-    // hardcode values in map
-    // one can get values from  db and populate map
+Storage.User userStorage = return new Storage.User() {
+     @Override
+     public Map<String, String> get(String userId, String campaignName) {
+        for (Map<String, String> savedCampaign: campaignStorageArray) {
+            if (savedCampaign.get("userId").equals(userId) && savedCampaign.get("campaignKey").equals(campaignName)) {
+               return savedCampaign;
+            }
+        }
+        return null;
+     }
 
-        String campaignId = "FIRST";
-        String variationId = "Control";
-
-        Map<String,Object> campaignKeyMap = new HashMap<>();
-        Map<String, String> variationKeyMap = new HashMap<>();
-        variationKeyMap.put(UserStorage.variationKey, variationId);
-        campaignKeyMap.put(campaignId,variationKeyMap);
-
-        //set
-        Map<String, Object> campaignStaticBucketMap = new HashMap<>();
-        campaignStaticBucketMap.put(UserStorage.userId, "Priya");
-        campaignStaticBucketMap.put(UserStorage.campaignKey, campaignKeyMap);
-
-        return campaignStaticBucketMap;
-    }
-
-    @Override
-    public void save(Map<String, Object> map) throws Exception {
-    // save in db or some data store
-
-    }
+     @Override
+     public void set(Map<String, String> map){
+        campaignStorageArray.add(map);
+     }
 };
 
-VWO vwo = VWO.launch(settings).withUserStorage(userStorage).build();
+VWO vwo = VWO.launch(settingsFile).withUserStorage(userStorage).build();
 ```
 
 **LOGGER**
@@ -140,7 +107,7 @@ SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further detail
 You can get the SDK to log by providing a concrete implementation for SLF4J.
 ```
 
-What it means is that at runtime, the logging `implementation` (or the logger binding) is missing , so slf4jsimply use a "NOP" implmentation, which does nothing.
+What it means is that at runtime, the logging `implementation` (or the logger binding) is missing , so slf4j simply use a "NOP" implementation, which does nothing.
 If you need to output JAVA SDK logs, there are different approaches for the same.
 
 SIMPLE IMPLEMENTATION
@@ -185,35 +152,32 @@ If you have logback in your class path, to get console logs add following Append
 ```
 
 ```java
-public static VWOLogger getCustomLogger() {
-    return new VWOLogger(VWO.Enums.LOGGER_LEVEL.DEBUG.value()) {
+new VWOLogger(VWO.Enums.LOGGER_LEVEL.DEBUG.value()) {
+    @Override
+    public void trace(String message, Object... params) {
+        LOGGER.trace(message, params);
+    }
 
-        @Override
-        public void trace(String message, Object... params) {
-            LOGGER.trace(message, params);
-        }
+    @Override
+    public void debug(String message, Object... params) {
+        LOGGER.debug(message, params);
+    }
 
-        @Override
-        public void debug(String message, Object... params) {
-            LOGGER.debug(message, params);
-        }
+    @Override
+    public void info(String message, Object... params) {
+        LOGGER.info(message, params);
+    }
 
-        @Override
-        public void info(String message, Object... params) {
-            LOGGER.info(message, params);
-        }
+    @Override
+    public void warn(String message, Object... params) {
+        LOGGER.warn(message, params);
+    }
 
-        @Override
-        public void warn(String message, Object... params) {
-            LOGGER.warn(message, params);
-        }
-
-        @Override
-        public void error(String message, Object... params) {
-            LOGGER.error(message, params);
-        }
-    };
-}
+    @Override
+    public void error(String message, Object... params) {
+        LOGGER.error(message, params);
+    }
+};
 ```
 
 For more appenders, refer [this](https://logback.qos.ch/manual/appenders.html).
