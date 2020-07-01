@@ -17,7 +17,7 @@ Install dependencies using `mvn install`.
 
 ## Documentation
 
-Refer [VWO Official Server-side Documentation](https://developers.vwo.com/reference#server-side-introduction)
+Refer [VWO Official Server-side Documentation](https://developers.vwo.com/reference#fullstack-introduction)
 
 ## Scripts
 
