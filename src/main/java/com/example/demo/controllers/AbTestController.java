@@ -1,5 +1,5 @@
 /**
- * Copyright 2019-2020 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2021 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,11 @@ import com.example.demo.config.Config;
 import com.example.demo.helpers.VWOHelper;
 import com.vwo.VWO;
 import com.vwo.VWOAdditionalParams;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
 
 @Controller
 public class AbTestController {
@@ -32,7 +33,12 @@ public class AbTestController {
 
   private AbTestController() {
     String settingsFile = VWOHelper.getSettingsFile(Config.accountId, Config.sdkKey);
-    this.vwoInstance = VWO.launch(settingsFile).withPollingInterval(pollingTime).withSdkKey(Config.sdkKey).withUserStorage(VWOHelper.getUserStorage()).withCustomLogger(VWOHelper.getCustomLogger()).build();
+    this.vwoInstance = VWO.launch(settingsFile)
+                            .withSdkKey(Config.sdkKey)
+                            // .withPollingInterval(pollingTime)
+                            .withUserStorage(VWOHelper.getUserStorage())
+                            .withCustomLogger(VWOHelper.getCustomLogger())
+                            .build();
   }
 
   @GetMapping(value = "/")
@@ -105,4 +111,29 @@ public class AbTestController {
 
     return "feature-test";
   }
+
+  @PostMapping("/webhook")
+  @ResponseStatus(HttpStatus.OK)
+  public void webhook(
+    @RequestHeader("x-vwo-auth") String secretKey,
+    @RequestBody String body
+    ) {
+    if (Config.webhookAuthKey != null && secretKey != null) {
+      if (secretKey.equals(Config.webhookAuthKey)) {
+        System.out.println("\nVWO webhook authenticated successfully.\n");
+      } else {
+        System.out.println("\nVWO webhook authentication failed. Please check.\n");
+        return;
+      }
+    } else {
+      System.out.println("\nSkipping Webhook Authentication as webhookAuthKey is not provided in Config.java\n");
+    }
+
+    if (this.vwoInstance != null) {
+      System.out.println(this.vwoInstance.getSettingFileString());
+      this.vwoInstance.getAndUpdateSettingsFile(Config.accountId, Config.sdkKey);
+      System.out.println(this.vwoInstance.getSettingFileString());
+    }
+  }
+
 }

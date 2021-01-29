@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- Copyright 2019-2020 Wingify Software Pvt. Ltd.
+<!-- Copyright 2019-2021 Wingify Software Pvt. Ltd.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ limitations under the License. -->
 	<artifactId>demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>demo</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Demo Spring Boot example for VWO server-side Java SDK</description>
 
 	<developers>
 		<developer>
@@ -81,10 +81,10 @@ limitations under the License. -->
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.25</version>
 		</dependency>
-		<dependency>
+    <dependency>
 			<groupId>com.vwo.sdk</groupId>
 			<artifactId>vwo-java-sdk</artifactId>
-			<version>1.8.2</version>
+			<version>1.10.0</version>
 		</dependency>
 	</dependencies>
 

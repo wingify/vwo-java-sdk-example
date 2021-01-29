@@ -1,5 +1,5 @@
 /**
- * Copyright 2019-2020 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2021 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,17 @@
 package com.example.demo.config;
 
 public class Config {
-  public static String accountId = "REPLACE_THIS_WITH_CORRECT_VALUE";
-  public static String sdkKey = "REPLACE_THIS_WITH_CORRECT_VALUE";
-  public static String campaignKey = "REPLACE_THIS_WITH_CORRECT_VALUE";
-  public static String goalIdentifier  = "REPLACE_THIS_WITH_CORRECT_VALUE";
+  public static String accountId = "";
+  public static String sdkKey = "";
+  public static String campaignKey = "";
+  public static String goalIdentifier  = "";
 
-  public static String featureRolloutCampaignKey = "REPLACE_THIS_WITH_CORRECT_VALUE";
-  public static String featureTestCampaignKey = "REPLACE_THIS_WITH_CORRECT_VALUE";
-  public static String featureTestGoalIdentifier = "REPLACE_THIS_WITH_CORRECT_VALUE";
+  public static String featureRolloutCampaignKey = "";
+  public static String featureTestCampaignKey = "";
+  public static String featureTestGoalIdentifier = "";
   public static Object featureTestRevenue = null;
 
-  public static String variableKey = "REPLACE_THIS_WITH_CORRECT_VALUE";
+  public static String variableKey = "";
+  public static String webhookAuthKey = "";
+
 }
