@@ -17,6 +17,7 @@
 package com.example.demo.config;
 
 public class Config {
+
   public static String accountId = "";
   public static String sdkKey = "";
   public static String campaignKey = "";
@@ -28,6 +29,7 @@ public class Config {
   public static Object featureTestRevenue = null;
 
   public static String variableKey = "";
-  public static String webhookAuthKey = "";
-
+  public static String webhookAuthKey = null;
+  public static String customDimensionTagKey = "";
+  public static String customDimensionTagValue = "";
 }

@@ -16,12 +16,17 @@
 
 package com.example.demo.helpers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.vwo.VWO;
 import com.vwo.logger.VWOLogger;
+import com.vwo.models.BatchEventData;
+import com.vwo.services.batch.BatchEventQueue;
+import com.vwo.services.batch.FlushInterface;
 import com.vwo.services.storage.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +63,20 @@ public class VWOHelper {
                 campaignStorageArray.add(map);
             }
         };
+    }
+
+    public static BatchEventData getBatchingData() {
+        BatchEventData batchData = new BatchEventData();
+        batchData.setEventsPerRequest(3);
+        batchData.setRequestTimeInterval(20);
+        batchData.setFlushCallback(new FlushInterface() {
+            @Override
+            public void onFlush(String s, JsonNode objectNode) {
+                System.out.println("error is " + s);
+                System.out.println("events are " + objectNode.toString());
+            }
+        });
+        return batchData;
     }
 
     /**
@@ -98,6 +117,14 @@ public class VWOHelper {
 
     public static String getSettingsFile(String accountId, String sdkKey) {
         return VWO.getSettingsFile(accountId, sdkKey);
+    }
+
+    public static String getTagKey() {
+        return "location";
+    }
+
+    public static String getTagValue() {
+        return "Amazon";
     }
 
     public static String getRandomUser() {

@@ -34,11 +34,13 @@ public class AbTestController {
   private AbTestController() {
     String settingsFile = VWOHelper.getSettingsFile(Config.accountId, Config.sdkKey);
     this.vwoInstance = VWO.launch(settingsFile)
-                            .withSdkKey(Config.sdkKey)
-                            // .withPollingInterval(pollingTime)
-                            .withUserStorage(VWOHelper.getUserStorage())
-                            .withCustomLogger(VWOHelper.getCustomLogger())
-                            .build();
+            .withSdkKey(Config.sdkKey)
+            .withPollingInterval(pollingTime)
+            .withBatchEvents(VWOHelper.getBatchingData())
+            .withUserStorage(VWOHelper.getUserStorage())
+            .withCustomLogger(VWOHelper.getCustomLogger())
+//            .withShouldTrackReturningUser(true)
+            .build();
   }
 
   @GetMapping(value = "/")
@@ -54,6 +56,8 @@ public class AbTestController {
     String variation = "";
     try {
       userId = userId == null ? VWOHelper.getRandomUser() : userId;
+      VWOAdditionalParams options = new VWOAdditionalParams();
+//      options.setShouldTrackReturningUser(false);
 
       variation = this.vwoInstance.activate(Config.campaignKey, userId);
       this.vwoInstance.track(Config.campaignKey, userId, Config.goalIdentifier);
@@ -96,6 +100,7 @@ public class AbTestController {
 
     VWOAdditionalParams additionalParams = new VWOAdditionalParams();
     additionalParams.setRevenueValue(Config.featureTestRevenue);
+//    additionalParams.setShouldTrackReturningUser(false);
 
     boolean isFeatureEnabled = this.vwoInstance.isFeatureEnabled(Config.featureTestCampaignKey, userId);
     this.vwoInstance.track(Config.featureTestCampaignKey, userId, Config.featureTestGoalIdentifier, additionalParams);
@@ -134,6 +139,42 @@ public class AbTestController {
       this.vwoInstance.getAndUpdateSettingsFile(Config.accountId, Config.sdkKey);
       System.out.println(this.vwoInstance.getSettingFileString());
     }
+  }
+
+  @GetMapping(value = "/push")
+  public String push(
+          @RequestParam(value = "userId", required = false) String userId,
+          Model model
+  ) {
+    boolean variation = false;
+    try {
+      userId = userId == null ? VWOHelper.getRandomUser() : userId;
+      this.vwoInstance.push(Config.customDimensionTagKey, Config.customDimensionTagValue, userId);
+    } finally {
+      model.addAttribute("title", "VWO | Java-sdk example | ");
+      model.addAttribute("userId", userId);
+      model.addAttribute("tagKey", Config.customDimensionTagKey);
+      model.addAttribute("tagValue", Config.customDimensionTagValue);
+      model.addAttribute("settingsFile", VWOHelper.prettyJsonSting(this.vwoInstance.getSettingFileString()));
+
+      return "push";
+    }
+  }
+
+  @GetMapping(value = "/flushEvents")
+  public String flush(Model model) {
+    boolean isEventsQueueFlushed = false;
+    try {
+      isEventsQueueFlushed = this.vwoInstance.flushEvents();
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    finally {
+      model.addAttribute("isEventsQueueFlushed",isEventsQueueFlushed);
+      model.addAttribute("settingsFile", VWOHelper.prettyJsonSting(this.vwoInstance.getSettingFileString()));
+    }
+    return "flush";
   }
 
 }
