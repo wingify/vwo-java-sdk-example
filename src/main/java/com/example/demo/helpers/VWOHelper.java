@@ -24,7 +24,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.vwo.VWO;
 import com.vwo.logger.VWOLogger;
-import com.vwo.models.BatchEventData;
+import com.vwo.models.response.BatchEventData;
 import com.vwo.services.batch.BatchEventQueue;
 import com.vwo.services.batch.FlushInterface;
 import com.vwo.services.storage.Storage;
@@ -38,6 +38,10 @@ import java.util.Random;
 public class VWOHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(VWOHelper.class);
     private static ArrayList<Map<String, String>> campaignStorageArray = new ArrayList<>();
+
+    public static ArrayList<Map<String, String>> getUsersData() {
+      return campaignStorageArray;
+    }
 
     /**
      * Before evaluating the variation of a user for a campaign, get method of user storage is called.
@@ -60,7 +64,9 @@ public class VWOHelper {
 
             @Override
             public void set(Map<String, String> map) {
+              if (!campaignStorageArray.contains(map)) {
                 campaignStorageArray.add(map);
+              }
             }
         };
     }

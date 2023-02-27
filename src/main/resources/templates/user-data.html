@@ -1,0 +1,139 @@
+<!-- Copyright 2019-2023 Wingify Software Pvt. Ltd.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. -->
+
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+    <head>
+        <title th:text="${title}"></title>
+    </head>
+    <style>
+        .center {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .margin--top {
+          margin-top: 20px;
+        }
+
+        .color-grey {
+          color: #777;
+        }
+
+        .color-blue {
+          color: #00a8ff;
+        }
+
+        button {
+          background: #fff;
+          padding: 10px 20px;
+          color: #777;
+          border: 2px solid #777;
+          font-size: 18px;
+        }
+        button.v1 {
+          border: 2px solid #ff9a9a;
+        }
+        button.v2 {
+          border: 2px solid #57e0a2;
+        }
+        button.v3 {
+          border: 2px solid #00a8ff;
+        }
+        button.refresh {
+          border: 2px solid #846b6b;
+          margin-left: 20px;
+        }
+
+        pre, .pre {
+          background-color: ghostwhite;
+          border: 1px solid silver;
+          padding: 10px 20px;
+          max-height: 80vh;
+          overflow: auto;
+        }
+        .json-key {
+          color: brown;
+        }
+        .json-value {
+          color: navy;
+        }
+        .json-string {
+          color: olive;
+        }
+
+        .main-container {
+          display: flex;
+          width: 100%;
+          height: 100%;
+          max-height: 100%;
+        }
+        .left-container {
+          flex: 0 1 70%;
+          min-height: 100%;
+          max-width: 70%;
+          margin: 0 10px;
+        }
+        .right-container {
+          flex: 0 1 50%;
+          display: flex;
+          height: 100%;
+          max-width: 50%;
+          flex-wrap: wrap;
+          align-items: flex-start;
+          margin: 0 10px;
+        }
+        .half-containers {
+          flex: 0 0 100%;
+          max-height: 50%;
+          min-height: 50%;
+          max-width: 100%;
+          overflow: hidden;
+        }
+
+      </style>
+    <body>
+        <h2 class="center  color-blue">VWO Java SDK Example</h2>
+        <div class="main-container">
+            <div class="left-container">
+                <h2 class="center  color-grey">User Data</h2>
+                <div class="pre" style="height: 60vh;">
+                  <div th:if="users_data" th:text="${users_data}"></div>
+                  <div th:unless="users_data">No data present</div>
+                </div>
+            </div>
+
+            <div class="right-container">
+                <div class="half-containers">
+                    <h2 class="center  color-grey">Details</h2>
+
+                    <div class="margin--top">
+                        <div>User ID - <strong th:text="${userId}"></strong></div>
+                    </div>
+                    <div th:if="userId" class="margin--top">
+                        <div>VWO UUID corresponding to User ID - <strong th:text="${vwo_uuid}"></strong></div>
+                    </div>
+
+                    <div th:if="userId" class="margin--top">
+                      <div>User Data
+                        <div class="pre" style="height: 60vh;">
+                          <div th:text="${userid_data}"></div>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+
+            </div>
+        </div>
+    </body>
+</html>

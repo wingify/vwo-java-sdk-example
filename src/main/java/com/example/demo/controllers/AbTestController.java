@@ -19,12 +19,15 @@ package com.example.demo.controllers;
 import com.example.demo.config.Config;
 import com.example.demo.helpers.VWOHelper;
 import com.vwo.VWO;
+import com.vwo.utils.UUIDUtils;
 import com.vwo.VWOAdditionalParams;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
 
 @Controller
 public class AbTestController {
@@ -36,7 +39,7 @@ public class AbTestController {
     this.vwoInstance = VWO.launch(settingsFile)
             .withSdkKey(Config.sdkKey)
             .withPollingInterval(pollingTime)
-            .withBatchEvents(VWOHelper.getBatchingData())
+            // .withBatchEvents(VWOHelper.getBatchingData())
             .withUserStorage(VWOHelper.getUserStorage())
             .withCustomLogger(VWOHelper.getCustomLogger())
 //            .withShouldTrackReturningUser(true)
@@ -175,6 +178,43 @@ public class AbTestController {
       model.addAttribute("settingsFile", VWOHelper.prettyJsonSting(this.vwoInstance.getSettingFileString()));
     }
     return "flush";
+  }
+
+  @GetMapping(value = "/getUserData")
+  public String getUserData(
+        @RequestParam(value = "userId", required = false) String userId,
+        Model model
+  ) {
+    if (userId == "") {
+      userId = "Specify a User ID by sending query-param. Eg: userId=Abc";
+
+      model.addAttribute("userId", userId);
+      return "user-data";
+    }
+
+    String uuid = UUIDUtils.getUUId(Integer.parseInt(Config.accountId), userId);
+    ArrayList<Map<String, String>> usersData = VWOHelper.getUsersData();
+
+    Object userIdData = "No data found for user-id: " + userId;
+
+    for(int i = 0; i < usersData.size(); i++)
+    {
+      Map<String, String> userDetail = usersData.get(i);
+
+      if (!userDetail.isEmpty()) {
+        if (userId != "" && userDetail.get("userId").contains(userId)) {
+          userIdData = userDetail;
+          break;
+        }
+      }
+    }
+
+    model.addAttribute("users_data", usersData);
+    model.addAttribute("userId", userId);
+    model.addAttribute("vwo_uuid", uuid);
+    model.addAttribute("userid_data", userIdData);
+
+    return "user-data";
   }
 
 }
