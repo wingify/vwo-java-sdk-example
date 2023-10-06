@@ -60,7 +60,9 @@ public class AbTestController {
     try {
       userId = userId == null ? VWOHelper.getRandomUser() : userId;
       VWOAdditionalParams options = new VWOAdditionalParams();
-//      options.setShouldTrackReturningUser(false);
+      // options.setShouldTrackReturningUser(false);
+      // options.setUserAgent(Config.userAgent);
+      // options.setIPAddress(Config.userIpAddress);
 
       variation = this.vwoInstance.activate(Config.campaignKey, userId);
       this.vwoInstance.track(Config.campaignKey, userId, Config.goalIdentifier);

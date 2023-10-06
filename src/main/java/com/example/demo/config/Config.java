@@ -32,4 +32,6 @@ public class Config {
   public static String webhookAuthKey = null;
   public static String customDimensionTagKey = "";
   public static String customDimensionTagValue = "";
+  public static String userAgent = "";
+  public static String userIpAddress = "";
 }
